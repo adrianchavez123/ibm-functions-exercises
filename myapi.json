@@ -1,0 +1,83 @@
+{
+    "swagger": "2.0",
+    "basePath": "/myapi",
+    "info": {
+        "title": "/myapi",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/greeting2": {
+            "get": {
+                "operationId": "getGreeting2",
+                "responses": {
+                    "default": {
+                        "description": "Default response"
+                    }
+                },
+                "x-openwhisk": {
+                    "action": "hello",
+                    "namespace": "manuel.adrian.chavez@ibm.com_dev",
+                    "package": "",
+                    "url": "https://us-south.functions.cloud.ibm.com/api/v1/web/manuel.adrian.chavez@ibm.com_dev/default/hello.json"
+                }
+            }
+        },
+        "/redirect": {
+            "get": {
+                "operationId": "getRedirect",
+                "responses": {
+                    "default": {
+                        "description": "Default response"
+                    }
+                },
+                "x-openwhisk": {
+                    "action": "redirect",
+                    "namespace": "manuel.adrian.chavez@ibm.com_dev",
+                    "package": "",
+                    "url": "https://us-south.functions.cloud.ibm.com/api/v1/web/manuel.adrian.chavez@ibm.com_dev/default/redirect.http"
+                }
+            }
+        }
+    },
+    "x-ibm-configuration": {
+        "assembly": {
+            "execute": [
+                {
+                    "operation-switch": {
+                        "case": [
+                            {
+                                "execute": [
+                                    {
+                                        "invoke": {
+                                            "target-url": "https://us-south.functions.cloud.ibm.com/api/v1/web/manuel.adrian.chavez@ibm.com_dev/default/hello.json",
+                                            "verb": "keep"
+                                        }
+                                    }
+                                ],
+                                "operations": [
+                                    "getGreeting2"
+                                ]
+                            },
+                            {
+                                "execute": [
+                                    {
+                                        "invoke": {
+                                            "target-url": "https://us-south.functions.cloud.ibm.com/api/v1/web/manuel.adrian.chavez@ibm.com_dev/default/redirect.http$(request.path)",
+                                            "verb": "keep"
+                                        }
+                                    }
+                                ],
+                                "operations": [
+                                    "getRedirect"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "cors": {
+            "enabled": true
+        }
+    }
+}
